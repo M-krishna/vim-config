@@ -46,7 +46,24 @@ nnoremap <C-f> :NERDTreeFind<CR>
 
 set completeopt=menu,menuone,noselect
 
+if has ('unnamedplus')
+  set clipboard=unnamedplus
+else
+  set clipboard=unnamed
+endif
+
 lua <<EOF
+
+require'lspconfig'.pylsp.setup{}
+require'lspconfig'.jedi_language_server.setup{}
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+require"lsp_signature".setup{}
+
   -- Setup nvim-cmp.
   local cmp = require'cmp'
   cmp.setup({
